@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from core.models import Evento
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -34,8 +35,8 @@ def submit_login(request):
         else:
             messages.error(request,"Usuário ou senha inválido")
     return redirect('/')
-@login_required(login_url='/login/')
 
+@login_required(login_url='/login/')
 def lista_eventos(request):
     usuario = request.user
     data_atual = datetime.now() -timedelta(hours=10)
@@ -101,3 +102,25 @@ def json_lista_evento(request, id_usuario):
     usuario = User.objects.get(id=id_usuario)
     evento = Evento.objects.filter(usuario=usuario).values ('id', 'titulo')
     return JsonResponse(list(evento), safe=False)
+
+def cadastro_novo(request):
+    if request.POST:
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        password_repeat= request.POST.get("password_repeat")
+        new_email = request.POST.get("email")
+        usuario = authenticate(username=username, password=password)
+        if usuario is None:
+            if password==password_repeat:
+                # Create user and save to the database
+                user = User.objects.create_user(username, new_email, password)
+                user.save()
+                #login(request, usuario)
+                return redirect('/')
+            else:
+                messages.error(request,"Senha diferente")
+        else:
+            login(request, usuario)
+            return redirect('/')
+
+    return redirect('/')

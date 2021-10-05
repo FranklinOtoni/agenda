@@ -1,7 +1,21 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-    {% include "model-header.html" %}
+    <!-- *{% include "model-header.html" %}*/-->
+    <meta charset="UTF-8">
+
+    {% load static %}
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:600'>
+    <link rel="stylesheet" href="{% static 'agenda/css/style.css' %}">
+
+    <title>Agenda</title>
+    <div align="right">
+        <a href="/logout">logout</a>
+    </div>
+    <h1>Agenda</h1>
+
 </head>
 <body>
     {% block content %} {% endblock %}
