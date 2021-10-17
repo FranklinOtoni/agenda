@@ -2,11 +2,16 @@
 {% extends "model-page.html" %}
 
 {% block content %}
-<div class="agenda-wrapper">
-    <h2>Agendamentos</h2>
-    <a href="evento/">
-        <button type="button">Novo Evento</button>
-    </a>
+<div class="agenda-wrapper" style="padding-top: 30px;">
+    <div class="container shadow p-3 mb-5 bg-body rounded">
+        <h2>Agendamentos</h2>
+        <a class="btn btn-outline-secondary" href="evento/"> Novo Evento </a>
+        <a class="btn btn-outline-secondary left" href="?{{pcal}}" > Mês Anterior </a>
+	    <a class="btn btn-outline-secondary right" href="?{{ncal}}"> Próximo Mês </a>
+
+        {{calendar | safe}}
+    </div>
+<!--
     <ul style="font-size: 18px">
         {% for evento in eventos %}
             <li>
@@ -20,5 +25,9 @@
             </li>
         {% endfor %}
         </ul>
+-->
 </div>
+
 {% endblock %}
+
+

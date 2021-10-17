@@ -7,6 +7,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.http.response import Http404, JsonResponse
+import calendar
+from calendar import HTMLCalendar
+
+from django.views import generic
 
 # Create your views here.
 
@@ -38,13 +42,50 @@ def submit_login(request):
 
 @login_required(login_url='/login/')
 def lista_eventos(request):
+    year = request.GET.get('year')
+    month = request.GET.get('month')
+    if year:
+        current_year = int(year)
+        current_month =int(month)
+    else:
+        now = datetime.now()
+        current_year = now.year
+        current_month = now.month
+
+
+    n_cal = datetime(current_year,current_month,1)
+
+    p_cal = n_cal - timedelta(days=3)
+
+    n_cal = n_cal + timedelta(days=35)
+
+    n_cal = 'year='+str(n_cal.year) + '&month=' + str(n_cal.month)
+    p_cal = 'year='+str(p_cal.year) + '&month=' + str(p_cal.month)
+
+#    data_atual = '01/' + str(current_month) + '/' + str(current_year)
+#    data_final = data_atual + timedelta(hours=30)
     usuario = request.user
     data_atual = datetime.now() -timedelta(hours=10)
     evento = Evento.objects.filter(usuario=usuario,
-                                   data_evento__gt=data_atual)
-    #evento = Evento.objects.all()
+                                   data_evento__month=current_month)
+
     dados = {'eventos':evento}
-    return render(request, 'agenda.html', dados)
+
+    #criando um calendário
+    cal = HTMLCalendar().formatmonth(current_year, current_month)
+    cal = cal.replace('<table border="0" cellpadding="0" cellspacing="0" class="month">','<table border="0" cellpadding="0" cellspacing="0" class="table month">')
+
+    for x in evento:
+        dt_evento = int(x.data_evento.strftime('%d'))
+        dt_evento = '">' + str(dt_evento) + '<'
+        alteracao = ' table-primary'+dt_evento + 'a href="evento/?id='+ str(x.id) + '"> '+ x.titulo + '</a><'
+        cal=cal.replace(dt_evento, alteracao)
+
+    dados['calendar'] = cal
+    dados['pcal'] = p_cal
+    dados['ncal'] = n_cal
+
+    return render(request, 'agenda.html', dados )
 
 @login_required(login_url='/login/')
 def evento(request):

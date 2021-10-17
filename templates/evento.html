@@ -1,30 +1,47 @@
 {% extends "model-page.html" %}
 {% block content %}
-<h2>Evento</h2>
+<div class="container" style="padding-top: 20px;">
+    <div class="row g5">
+        <h2>Evento</h2>
 
-<form action="submit" method="POST"> {% csrf_token %}
-    <label>Titulo</label>
-    <input type="number" name="id_evento" value="{{ evento.id }}" hidden>
-    <br>
-    <input type="text" name="titulo" size="23" value="{{ evento.titulo }}">
-    <br>
-    <label>Data do Evento</label>
-    <br>
-    <input type="datetime-local" name="data_evento" value="{{ evento.get_data_input_evento }}">
-    <br>
-    <label>Descrição</label>
-    <br>
-    <textarea name="descricao" rows="5" cols="24">{{ evento.descricao }} </textarea>
-    <br>
-    <label>Local</label>
-    <br>
-    <textarea name="local" rows="2" cols="24">{{ evento.local }} </textarea>
-    <br><br>
-    <a><button type="submit">Salvar</button></a>
-    <a href="/">
-        <button type="submit">Cancelar</button>
-    </a>
-</form>
+        <form class="form-control" action="submit" method="POST"> {% csrf_token %}
+            <div class="col-12">
+                <label class="form-label">Titulo</label>
+                <input class="form-control"type="number" name="id_evento" value="{{ evento.id }}" hidden>
+                <input class="form-control" type="text" name="titulo" size="23" value="{{ evento.titulo }}">
+            </div>
+            <div class="col-12">
+                <label class="form-label">Data do Evento</label>
+                <input class="form-control" type="datetime-local" name="data_evento" value="{{ evento.get_data_input_evento }}">
+            </div>
+            <div class="col-12">
+                <label class="form-label">Descrição</label>
+                <textarea class="form-control" name="descricao" rows="4" cols="24">{{ evento.descricao }} </textarea>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Local</label>
+                <textarea class="form-control" name="local" rows="2" cols="24">{{ evento.local }} </textarea>
+            </div>
+            <div class="col-12">
+                <a>
+                    <button class="btn btn-outline-secondary" type="submit">Salvar</button>
+                </a>
+                <a href="/">
+                    <button class="btn btn-outline-secondary" type="submit">Cancelar</button>
+                </a>
+
+                {% if evento.id %}
+                    <a href="delete/{{evento.id}}/" >
+                    <button class="btn btn-outline-secondary" type="button">Excluir</button>
+                    </a>
+
+                {% endif %}
 
 
+
+
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
